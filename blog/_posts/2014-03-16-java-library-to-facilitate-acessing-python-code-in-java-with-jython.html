@@ -1,0 +1,31 @@
+---
+layout: post
+title: "[Java] Library to facilitate acessing Python code in Java with Jython"
+date: 2014-03-16 03:59:41.000000000 -03:00
+type: post
+published: true
+status: publish
+categories: []
+tags:
+- Java
+- jython
+- python
+meta:
+  _publicize_pending: '1'
+author:
+  login: danielcgimenes@gmail.com
+  email: danielcgimenes@gmail.com
+  display_name: danielcgimenes@gmail.com
+  first_name: ''
+  last_name: ''
+---
+<p style="text-align:justify;">Jython is a library that allows using Python classes in Java and vice-versa. A couple of weeks ago, I wanted it so I wouldn't need to reimplement a very nice library developed in Python, but I had some difficulties with that.</p>
+<p style="text-align:justify;">The default way of acessing Python classes through Jython is by creating a Java interface which shall be implemented by the Python class (yes, in Python code) and with some calls to Jython you get an object assigned to a Java reference with that interface type. This may sound cool, but has some caveats.</p>
+<p style="text-align:justify;">1 - You have to change the library code, so the classes you're going to use implement the Java interfaces you need to access the objects. This means you can't easily use new versions of that library and you'll have some work to do every time you choose to update the library.<br />
+2 - The library code isn't Python anymore. As you coded those classes to implement Java interfaces, this code will not run anywhere but in Jython and only together with the Java interfaces.<br />
+3 - Python coders usually don't care much about encapsulation. As I figured later, the programming language does not provide ways to protect members of a class - everything is 'public' and there are naming conventions to state what shouldn't be used outside the class. So, to access those attributes we have to change the Python code again (we need 'gets' to access those public attributes that hold result of processing)! So that library you wanted to use is now a custom version to be mantained by you... :(</p>
+<p style="text-align:justify;">Well, I searched a lot and even posted <a href="http://stackoverflow.com/questions/22334747/accessing-public-attributes-of-python-class-in-java-with-jython" target="_blank">a question on StackOverflow</a> about those issues, and I found a way to facilitate the use of Jython and isolate the Jython code from the Python library (hint: inheritance and weird reflection). And I created <a title="jythonEasierCoercion in GitHub" href="https://github.com/danielgimenes/jythonEasierCoercion" target="_blank">a library on GitHub</a> with that solution.</p>
+<h2 style="text-align:justify;">jythonEasierCoercion library</h2>
+<p style="text-align:justify;">With this library, there is no need to change the Python library code you're trying to access. If you don't need to access public attributes of Python classes, there is no need to write Python code at all. If not, then you can write some code to expose those variables in separate files from the library. This classes must inherit the target Python class and implement the Java interface. The jythonEasierCoercion library will convert the object from the original class to this new class before assigning it to the Java reference.</p>
+<p style="text-align:justify;">The jythonEasierCoercion library can be obtained in this GitHub page: <a title="jythonEasierCoercion" href="https://github.com/danielgimenes/jythonEasierCoercion" target="_blank">https://github.com/danielgimenes/jythonEasierCoercion</a></p>
+<p style="text-align:justify;">Instructions on usage, installing, license, etc are also on GitHub. The library includes JavaDocs documentation and JUnit unitary tests, so it should be easy and stable to use.</p>

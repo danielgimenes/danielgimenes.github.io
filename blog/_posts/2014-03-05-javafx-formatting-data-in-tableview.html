@@ -1,0 +1,50 @@
+---
+layout: post
+title: "[JavaFX] Formatting Data in TableView"
+date: 2014-03-05 21:36:06.000000000 -03:00
+type: post
+published: true
+status: publish
+categories: []
+tags:
+- Java
+- JavaFX
+meta:
+  _publicize_pending: '1'
+  _edit_last: '1'
+  _syntaxhighlighter_encoded: '1'
+author:
+  login: danielcgimenes@gmail.com
+  email: danielcgimenes@gmail.com
+  display_name: danielcgimenes@gmail.com
+  first_name: ''
+  last_name: ''
+---
+<p style="text-align: justify;"><a title="JavaFX Developer Home" href="http://www.oracle.com/technetwork/pt/java/javafx/overview/index.html" target="_blank">JavaFX</a> (libraries and tools for UI design and programming) provides a great component called <a title="TableView javadocs" href="http://docs.oracle.com/javafx/2/api/javafx/scene/control/TableView.html" target="_blank">TableView</a>, which accepts easy binding with POJO data through CellFactories. In a nutshell you provide a collection of entities and configure each column of the table with a CellFactory that knows how to get a specific data from one of those entities.</p>
+<p style="text-align: justify;">The current version of JavaFX provides a class called <a title="PropertyValueFactory JavaDocs" href="http://docs.oracle.com/javafx/2/api/javafx/scene/control/cell/PropertyValueFactory.html" target="_blank">PropertyValueFactory</a>, that automatically gets the data from the entity using reflection (you supply the field name as a String) and creates a Property field, that is passed to the TableColumn of the TableView. But, this convenience class does not allow data formatting, so it's necessary to create a custom CellValueFactory for that.</p>
+<p style="text-align: justify;">I've created a very simple project on GitHub that provides custom CellValueFactories for Date and BigDecimal formating. It's called <a title="jfxCellValueFactories Project Page" href="https://github.com/danielgimenes/jfxCellValueFactories" target="_blank">jfxCellValueFactories</a> and can be downloaded here: <a title="jfxCellValueFactories Releases Page" href="https://github.com/danielgimenes/jfxCellValueFactories/releases/" target="_blank">https://github.com/danielgimenes/jfxCellValueFactories/releases/</a></p>
+<p style="text-align: justify;">Those classes work as the PropertyValueFactory, but allow easy formatting, accepting a format string on the constructor.</p>
+<p style="text-align: justify;">Example of using FormattedDateValueFactory:</p>
+<p>[code language="java"]<br />
+public class MyEntity {<br />
+	private Date date;</p>
+<p>	public Date getDate() {<br />
+		return this.date;<br />
+	}<br />
+}</p>
+<p>public class MyController {<br />
+	@FXML<br />
+	private TableView&lt;MyEntity&gt; tableView;</p>
+<p>	@FXML<br />
+	private TableColumn&lt;MyEntity, String&gt; dateColumn;</p>
+<p>	// ...</p>
+<p>	private void configureTableView() {<br />
+		dateColumn.setCellValueFactory(new FormattedDateValueFactory&lt;InvoiceTableEntry&gt;(&quot;date&quot;, &quot;dd/MM/yyyy&quot;));<br />
+	}</p>
+<p>	// ...</p>
+<p>	private void queryData() {<br />
+		List&lt;MyEntity&gt; data = myService.getData();<br />
+		tableView.setItems(FXCollections.observableList(data));<br />
+	}<br />
+}<br />
+[/code]</p>

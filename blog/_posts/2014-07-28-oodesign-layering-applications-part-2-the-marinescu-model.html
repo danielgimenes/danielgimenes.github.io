@@ -1,0 +1,54 @@
+---
+layout: post
+title: "[OODesign] Layering Applications Part 2 - The Marinescu Model"
+date: 2014-07-28 19:35:49.000000000 -03:00
+type: post
+published: true
+status: publish
+categories: []
+tags:
+- Java EE
+- OODesign
+meta:
+  _edit_last: '1'
+author:
+  login: danielcgimenes@gmail.com
+  email: danielcgimenes@gmail.com
+  display_name: danielcgimenes@gmail.com
+  first_name: ''
+  last_name: ''
+---
+<p style="text-align: justify;">In the first post of this series the importance of Layering Applications and the Brown Model [Brown et al] were presented. In this second part, we'll see The Marinescu Model defined in [Marinescu].</p>
+<h2 style="text-align: justify;">The Marinescu Model</h2>
+<p style="text-align: justify;">The book "EJB Design Patterns" [Marinescu] defines an architecture and best practices based on several patterns described in the book, that center about the EJB techonology. This means that the applications it refers to are presumed to have distributed components, so everything is designed thinking in performance, security, etc, for distributed systems.</p>
+<p style="text-align: justify;">The first part of the book, the catalog of patterns, is divided in 5 groups of patterns and strategies (EJB Layer Architectural, Inter-tier Data Transfer, Transaction and Persistence, Client-side EJB). As the focus of this post is layering and not patterns, I'll explain just the Session Façade and some of the DTO-related ones, which I think are the most important for understanding the layering. If you want to fully understand the subject, I suggest you read the book, which can be obtained <a title="Free Book EJB Design Patterns" href="http://www.theserverside.com/news/1369776/Free-Book-EJB-Design-Patterns" target="_blank">here</a>.</p>
+<h2 style="text-align: justify;">Session Façade</h2>
+<p style="text-align: justify;">When using a distributed system, every call to a method has a high cost in performance, risk of unavailability and security problems. So using fine grained distributed components  (well defined, specific), which result in lots of calls to get something done, can be a problem. Instead of this it is prefered to call bulk methods with all necessary information being sent and received, so that there will be the minimum possible cost of interacting with distributed components.</p>
+<p style="text-align: justify;">The Session Façade is a pattern that defines distributed components as coarse-grained objects, in which each method resolves a use case or complete unit of work. This way, less calls are made between the client and the distributed part. This Session Façades are part of an obrigatory Service layer, which executes workflow logic and interfacing with other systems, and delegates business logic execution for Domain Model layer objects.</p>
+<p style="text-align: justify;">In EJB the Session Façade should be implemented with Session Beans, generally Stateless Session Beans.</p>
+<p style="text-align: justify;">There is a version of this pattern for asynchronous calls, called Message Façade, described in [Marinescu].</p>
+<h2 style="text-align: justify;">Data Transfer Object Patterns</h2>
+<p style="text-align: justify;">The same way the Session Façade tries to minimize calls between client application and the distributed components, the Data Transfer Object (DTO) tries to minimize calls to distributed Domain Model objects. Of course this only works if you're using Entity Beans or distributing this Domain Model objects somehow.</p>
+<p style="text-align: justify;">The DTO is an object that has some or all data of a Domain Model object. If it is a complete copy, but not distributed (disconnected), it is called Domain DTO. If it is has less than the data of the entity or combines several entities in one DTO, it is called Custom DTO. The advantages of using a Custom DTO is to transfer only what you need between the client and the distributed part of the systems, so increasing cohesion of the involved parts.</p>
+<p style="text-align: justify;">In [Marinescu], it is recommended that the developer team starts by doing Domain DTOs for each Domain Model object, and then pass to Custom DTO if needed, according to the development of the system. I disagree with that. I think you should build DTOs only if and WHEN needed, and then already with the minimum data as possible, to make things easier and clearer from the start.</p>
+<p style="text-align: justify;">To decouple DTO from Domain Model objects, [Marinescu] suggest the use of objects implementing the DTO Factory pattern. This would create a new set of objects to construct DTOs. I think this should be used only if you have SEVERAL DTOs, because it increases a lot the quantity of classes to maintain, and makes the construction of DTOs from entities harder and more error prone.</p>
+<h2 style="text-align: justify;">The Layers Of Marinescu Model</h2>
+<p>[caption id="attachment_426" align="aligncenter" width="347"]<a href="http://www.dgimenes.com/wp-content/uploads/2014/05/marinescu.png"><img class="size-full wp-image-426" title="The Marinescu Model" alt="The Marinescu Model" src="{{ site.baseurl }}/assets/marinescu.png" width="347" height="473" /></a> The Marinescu Model[/caption]</p>
+<p style="text-align: justify;">The Marinescu Model defines the following layers:</p>
+<ul style="text-align: justify;">
+<li>Presentation: the UI parts of the application (or applications). Should concern only about the presentation of data and user interaction;</li>
+<li>Application: this is called "the glue" in [Marinescu] between the Presentation and the Services Layer. Should do only sintatic validation and workflow of components through layers;</li>
+<li>Services: composed of Session Beans, provides access to the business logic, which is divided between this layer and the Domain Model Layer. All calls of Application layer must go through this layer. It contains workflow logic to use cases that envolves several domain objects, and mediates calls to domain objects when business logic is inside those objects. Also it is resposible for interacting with other external systems, like message queues, and to interact with the Persistence Layer for obtaining and storing data;</li>
+<li>Domain: the objects that represents the business domain of your solution, with business elements, logics and rules. It should be as decoupled as possible from the rest of the system;</li>
+<li>Persistence: "plumbing logic required to make your domain model persist in a data store." [Marinescu]. When using JPA or Hibernate, this layer is already implemented by the libraries;</li>
+</ul>
+<h2 style="text-align: justify;">Comparing with Brown Model</h2>
+<p style="text-align: justify;">The differences between the Brown and the Marinescu architectures can be explained by the focus in distributed applications in the second one.</p>
+<p style="text-align: justify;">The Presentation layer in both have the same responsability. But in the Brown model it relates with the Mediator layer and in Marinescu's with the Application layer. Although their name suggest the same thing, their responsability is different. The Mediator layer has no references to objects of the presentation, and defines application workflow (like user registration wizard) in a general way, with built in logic that interacts directly with the Domain layer objects. The Application Layer in Marinescu model though, is coupled in BOTH Presentation and Service layer and does only minimal validation, delegating all use case-related logic to the Service Layer.</p>
+<p style="text-align: justify;">Going up another layer, the Service Layer is obrigatory in Marinescu's model (because of the distributed architecture problems) and is the only point of interaction between application and server code. In Brown model, the Service Layer is an optional part of the Domain Model layer which should implement only business rules that are not directly related to an entity (for example, printing, sending e-mail, etc). So the "Service Layers" here are quite different.</p>
+<p style="text-align: justify;">Now to the persistence. In both models, the persistence code is not in the Domain Model. In Brown the Data Mapping Layer  is used by the Mediator layer, and in Marinescu's it (Persistence Layer) is in used by the Service Layer. Also, the Marinescu's does not include a Data Store layer, and considers any technology for accessing data storages part of the Persistence Layer (which is fine in my opinion).</p>
+<p style="text-align: justify;">Both architectures are great. I personally prefer Brown's, because nowadays it is rare you really need to distribute your EJBs, and Brown is smaller, more concise, in my opinion. But I think they're both still kind of limiting.</p>
+<p style="text-align: justify;">In the next post of this series, we'll see Martin Fowler's suggested architecture, which is far more flexible than the already presented, but very powerfull because of the several presented patterns, which can be chosen and grouped according to your needs.</p>
+<p style="text-align: justify;">---</p>
+<p style="text-align: justify;">[Brown et al] Brown et al. "Enterprise Java Programming with IBM WebSphere". Addison-Wesley, 2001.<br />
+[Marinescu] Marinescu. "EJB Design Patterns". New York: John Wiley, 2002.</p>

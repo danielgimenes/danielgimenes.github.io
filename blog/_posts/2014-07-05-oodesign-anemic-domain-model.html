@@ -1,0 +1,39 @@
+---
+layout: post
+title: "[OODesign] Anemic Domain Model"
+date: 2014-07-05 19:00:42.000000000 -03:00
+type: post
+published: true
+status: publish
+categories: []
+tags:
+- ASP.NET
+- Java EE
+- OODesign
+meta:
+  _edit_last: '1'
+author:
+  login: danielcgimenes@gmail.com
+  email: danielcgimenes@gmail.com
+  display_name: danielcgimenes@gmail.com
+  first_name: ''
+  last_name: ''
+---
+<p style="text-align: justify;">Designing software is hard, and sometimes we discover that we've been doing something that isn't good. It's always this: The good news is that your code still works, and it still delivers value; The bad news is that what you've done may cause trouble for someone (including you) to expand, maintain or understand it.</p>
+<p style="text-align: justify;">Anemic Domain Model is one of my findings of this year. I'll try to give some context, explain what it is and tell my story into it.</p>
+<h2 style="text-align: justify;">ASP.NET 2.0 Data Access Layer And My Doom :)</h2>
+<p style="text-align: justify;">In my second year of professional work in software development I started working with ASP.NET (before that I used mostly C# for desktop applications) and the buzz at the time was ASP.NET 2.0 Data Access Layers (DAL), which enforced Microsoft DNA Architecture (and I didn't know at the time). With Visual Studio 2005 you could use some wizards to connect to a database which already had relations (tables, views, etc) and generate Typed DataSets with methods to manage that data (basically CRUD). If you're curious, you can see how that worked in <a title="Creating a Data Access Layer (C#)" href="http://www.asp.net/web-forms/tutorials/data-access/introduction/creating-a-data-access-layer-cs" target="_blank">this tutorial</a>. That was awesome at the time, and very new for me. My last projects at the time hardly had any separation of layers as I used RAD (Rapid Application Development) technologies (Delphi and .NET WinForms) and almost everything was coded tied to the view.</p>
+<p style="text-align: justify;">That techology was bringing a fixed layering to my new apps, which was ASP.NET view files (aspx), code-behind (C# classes) as presenter, and "business logic layer" (BLL)  classes that used the DAL Typed DataSets. Thing is, as we had a Stored Procedures (SPs) expert in the team, smart grouping, filtering, validation, etc, was being done in Oracle 10g, and every time we needed some new way to manage data, we created a new SP and 'mapped' it on a new method of a DAL DataSet, or we implemented it on the code-behind class.</p>
+<p style="text-align: justify;">In short, there was no domain model - or at least not a rich one. As I moved to Java EE some years after, and I disliked Stored Procedures, I had to start doing operations on data in my application. And as EJB provided transactions and amazing integration with Hibernate, I started coding all business and data access logic in EJBs, even if those operations refered to entities. My Domain Model, which now I created manually and were not representations of relations from a database, had object oriented style because they were design to represent real elements of the business context I were working with. BUT, all functionality related to those entities were coded in the EJBs which were like a fat Service Layer from Marinescu's architecture [Marinescu] (the data access layer is all inside Hibernate).</p>
+<p style="text-align: justify;">That happened until I heard the term Anemic Domain Model and started reading about it.</p>
+<h2 style="text-align: justify;">The Anemic Domain Model</h2>
+<p style="text-align: justify;">When the entities of a domain model only have data and no functionality, which is coded elsewhere, we have an Anemic Domain Model. This anti-pattern is cited in a Martin Fowler article of same name as getting more popular, and one of the reasons "is that many OO experts do recommend putting a layer of procedural services on top of a domain model, to form a Service Layer. But this isn't an argument to make the domain model void of behavior, indeed service layer advocates use a service layer in conjunction with a behaviorally rich domain model." [Fowler ADM].</p>
+<p style="text-align: justify;">Eric Evans, in his definition of Application Layer (synonym for Service Layer in this case), comments on the risk of running into an Anemic Model: "[The Service] layer is kept thin. It does not contain business rules or knowledge, but only coordinates tasks and delegates work to collaborations of domain objects in the next layer down. It does not have state reflecting the business situation, but it can have state that reflects the progress of a task for the user or the program." [Evans DDD]</p>
+<p style="text-align: justify;">The disadvantages of having an anemic instead of a rich domain model are that you lose the object orientation benefits like reuse through inheritance and encapsulation of data (all data must be acessible to the service layer, and the only way to do that is making it public), unit tests are harder to write (the unit must be more than a class, and generally involve data access mixed with business rules), and others. Also, I think you lose the easiness to improve business logic along the project development that Domain Driven Design and/or Test Driven Development can provide.</p>
+<p style="text-align: justify;">Fowler states in PEAA [<em>Fowler PoEAA</em>] and reenforces in his article about Anemic Domain Model [Fowler ADM] that Domain Models aren't always ideal for an application. Rich Domain Models are harder to map to databases, but better for complex logic. "If you have complicated and everchanging business rules involving validation, calculations, and derivations, chances are that you'll want an object model to handle them. On the other hand, if you have simple not-null checks and a couple of sums to calculate, a Transaction Script [...] [pattern] is a better bet." [<em>Fowler PoEAA</em>]</p>
+<p style="text-align: justify;">I can see that in my first ASP.NET 2.0 application. Most of the logic was in the database as Stored Procedures, and most of the application was CRUD of entities and charts. We could have benefited of a rich domain model if we had designed the application with TDD, but as the team worked differently, I think using those RAD functionalities were gains to our project. And if the system had grown, probably the best would be to refactor it to a rich domain model.</p>
+<p style="text-align: justify;">---</p>
+<p style="text-align: justify;">[<em>Fowler PoEAA</em>] Fowler, Martin. “Patterns of Enterprise Application Architecture” Addison-Wesley, 2003.<br />
+[Fowler ADM] Fowler, Martin. "Anemic Domain Model" available in http://www.martinfowler.com/bliki/AnemicDomainModel.html.<br />
+[Evans DDD] Evans, Eric. "Domain-Driven Design. Tackling Complexity in the Heart of Software" Addison-Wesley,  2003.<br />
+[Marinescu] Marinescu. "EJB Design Patterns". New York: John Wiley, 2002.</p>

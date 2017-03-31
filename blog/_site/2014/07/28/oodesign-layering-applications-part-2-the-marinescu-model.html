@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>[OODesign] Layering Applications Part 2 - The Marinescu Model</title>
+  <meta name="description" content="In the first post of this series the importance of Layering Applications and the Brown Model [Brown et al] were presented. In this second part, we&#39;ll see The...">
+
+  <link rel="stylesheet" href="/blog/assets/main.css">
+  <link rel="canonical" href="http://localhost:4000/blog/2014/07/28/oodesign-layering-applications-part-2-the-marinescu-model.html">
+  <link rel="alternate" type="application/rss+xml" title="dgimenes technical blog" href="/blog/feed.xml">
+  
+  
+</head>
+
+
+  <body>
+
+    <header class="site-header" role="banner">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">dgimenes technical blog</a>
+
+    <nav class="site-nav">
+      <span class="menu-icon">
+        <svg viewBox="0 0 18 15" width="18px" height="15px">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </span>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/blog/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">[OODesign] Layering Applications Part 2 - The Marinescu Model</h1>
+    <p class="post-meta"><time datetime="2014-07-28T19:35:49-03:00" itemprop="datePublished">Jul 28, 2014</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{"login"=>"danielcgimenes@gmail.com", "email"=>"danielcgimenes@gmail.com", "display_name"=>"danielcgimenes@gmail.com", "first_name"=>"", "last_name"=>""}</span></span></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p style="text-align: justify;">In the first post of this series the importance of Layering Applications and the Brown Model [Brown et al] were presented. In this second part, we'll see The Marinescu Model defined in [Marinescu].</p>
+<h2 style="text-align: justify;">The Marinescu Model</h2>
+<p style="text-align: justify;">The book "EJB Design Patterns" [Marinescu] defines an architecture and best practices based on several patterns described in the book, that center about the EJB techonology. This means that the applications it refers to are presumed to have distributed components, so everything is designed thinking in performance, security, etc, for distributed systems.</p>
+<p style="text-align: justify;">The first part of the book, the catalog of patterns, is divided in 5 groups of patterns and strategies (EJB Layer Architectural, Inter-tier Data Transfer, Transaction and Persistence, Client-side EJB). As the focus of this post is layering and not patterns, I'll explain just the Session Façade and some of the DTO-related ones, which I think are the most important for understanding the layering. If you want to fully understand the subject, I suggest you read the book, which can be obtained <a title="Free Book EJB Design Patterns" href="http://www.theserverside.com/news/1369776/Free-Book-EJB-Design-Patterns" target="_blank">here</a>.</p>
+<h2 style="text-align: justify;">Session Façade</h2>
+<p style="text-align: justify;">When using a distributed system, every call to a method has a high cost in performance, risk of unavailability and security problems. So using fine grained distributed components  (well defined, specific), which result in lots of calls to get something done, can be a problem. Instead of this it is prefered to call bulk methods with all necessary information being sent and received, so that there will be the minimum possible cost of interacting with distributed components.</p>
+<p style="text-align: justify;">The Session Façade is a pattern that defines distributed components as coarse-grained objects, in which each method resolves a use case or complete unit of work. This way, less calls are made between the client and the distributed part. This Session Façades are part of an obrigatory Service layer, which executes workflow logic and interfacing with other systems, and delegates business logic execution for Domain Model layer objects.</p>
+<p style="text-align: justify;">In EJB the Session Façade should be implemented with Session Beans, generally Stateless Session Beans.</p>
+<p style="text-align: justify;">There is a version of this pattern for asynchronous calls, called Message Façade, described in [Marinescu].</p>
+<h2 style="text-align: justify;">Data Transfer Object Patterns</h2>
+<p style="text-align: justify;">The same way the Session Façade tries to minimize calls between client application and the distributed components, the Data Transfer Object (DTO) tries to minimize calls to distributed Domain Model objects. Of course this only works if you're using Entity Beans or distributing this Domain Model objects somehow.</p>
+<p style="text-align: justify;">The DTO is an object that has some or all data of a Domain Model object. If it is a complete copy, but not distributed (disconnected), it is called Domain DTO. If it is has less than the data of the entity or combines several entities in one DTO, it is called Custom DTO. The advantages of using a Custom DTO is to transfer only what you need between the client and the distributed part of the systems, so increasing cohesion of the involved parts.</p>
+<p style="text-align: justify;">In [Marinescu], it is recommended that the developer team starts by doing Domain DTOs for each Domain Model object, and then pass to Custom DTO if needed, according to the development of the system. I disagree with that. I think you should build DTOs only if and WHEN needed, and then already with the minimum data as possible, to make things easier and clearer from the start.</p>
+<p style="text-align: justify;">To decouple DTO from Domain Model objects, [Marinescu] suggest the use of objects implementing the DTO Factory pattern. This would create a new set of objects to construct DTOs. I think this should be used only if you have SEVERAL DTOs, because it increases a lot the quantity of classes to maintain, and makes the construction of DTOs from entities harder and more error prone.</p>
+<h2 style="text-align: justify;">The Layers Of Marinescu Model</h2>
+<p>[caption id="attachment_426" align="aligncenter" width="347"]<a href="http://www.dgimenes.com/wp-content/uploads/2014/05/marinescu.png"><img class="size-full wp-image-426" title="The Marinescu Model" alt="The Marinescu Model" src="/blog/assets/marinescu.png" width="347" height="473" /></a> The Marinescu Model[/caption]</p>
+<p style="text-align: justify;">The Marinescu Model defines the following layers:</p>
+<ul style="text-align: justify;">
+<li>Presentation: the UI parts of the application (or applications). Should concern only about the presentation of data and user interaction;</li>
+<li>Application: this is called "the glue" in [Marinescu] between the Presentation and the Services Layer. Should do only sintatic validation and workflow of components through layers;</li>
+<li>Services: composed of Session Beans, provides access to the business logic, which is divided between this layer and the Domain Model Layer. All calls of Application layer must go through this layer. It contains workflow logic to use cases that envolves several domain objects, and mediates calls to domain objects when business logic is inside those objects. Also it is resposible for interacting with other external systems, like message queues, and to interact with the Persistence Layer for obtaining and storing data;</li>
+<li>Domain: the objects that represents the business domain of your solution, with business elements, logics and rules. It should be as decoupled as possible from the rest of the system;</li>
+<li>Persistence: "plumbing logic required to make your domain model persist in a data store." [Marinescu]. When using JPA or Hibernate, this layer is already implemented by the libraries;</li>
+</ul>
+<h2 style="text-align: justify;">Comparing with Brown Model</h2>
+<p style="text-align: justify;">The differences between the Brown and the Marinescu architectures can be explained by the focus in distributed applications in the second one.</p>
+<p style="text-align: justify;">The Presentation layer in both have the same responsability. But in the Brown model it relates with the Mediator layer and in Marinescu's with the Application layer. Although their name suggest the same thing, their responsability is different. The Mediator layer has no references to objects of the presentation, and defines application workflow (like user registration wizard) in a general way, with built in logic that interacts directly with the Domain layer objects. The Application Layer in Marinescu model though, is coupled in BOTH Presentation and Service layer and does only minimal validation, delegating all use case-related logic to the Service Layer.</p>
+<p style="text-align: justify;">Going up another layer, the Service Layer is obrigatory in Marinescu's model (because of the distributed architecture problems) and is the only point of interaction between application and server code. In Brown model, the Service Layer is an optional part of the Domain Model layer which should implement only business rules that are not directly related to an entity (for example, printing, sending e-mail, etc). So the "Service Layers" here are quite different.</p>
+<p style="text-align: justify;">Now to the persistence. In both models, the persistence code is not in the Domain Model. In Brown the Data Mapping Layer  is used by the Mediator layer, and in Marinescu's it (Persistence Layer) is in used by the Service Layer. Also, the Marinescu's does not include a Data Store layer, and considers any technology for accessing data storages part of the Persistence Layer (which is fine in my opinion).</p>
+<p style="text-align: justify;">Both architectures are great. I personally prefer Brown's, because nowadays it is rare you really need to distribute your EJBs, and Brown is smaller, more concise, in my opinion. But I think they're both still kind of limiting.</p>
+<p style="text-align: justify;">In the next post of this series, we'll see Martin Fowler's suggested architecture, which is far more flexible than the already presented, but very powerfull because of the several presented patterns, which can be chosen and grouped according to your needs.</p>
+<p style="text-align: justify;">---</p>
+<p style="text-align: justify;">[Brown et al] Brown et al. "Enterprise Java Programming with IBM WebSphere". Addison-Wesley, 2001.<br />
+[Marinescu] Marinescu. "EJB Design Patterns". New York: John Wiley, 2002.</p>
+
+  </div>
+
+  
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">dgimenes technical blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>
+            
+              dgimenes technical blog
+            
+            </li>
+            
+            <li><a href="mailto:danielcgimenes@gmail.com">danielcgimenes@gmail.com</a></li>
+            
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/danielgimenes"><span class="icon icon--github"><svg viewBox="0 0 16 16" width="16px" height="16px"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">danielgimenes</span></a>
+
+          </li>
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

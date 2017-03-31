@@ -1,0 +1,57 @@
+---
+layout: post
+title: "[Refactoring] Code Smells"
+date: 2014-05-28 20:00:59.000000000 -03:00
+type: post
+published: true
+status: publish
+categories: []
+tags:
+- OODesign
+- Refactoring
+meta:
+  _edit_last: '1'
+  _syntaxhighlighter_encoded: '1'
+author:
+  login: danielcgimenes@gmail.com
+  email: danielcgimenes@gmail.com
+  display_name: danielcgimenes@gmail.com
+  first_name: ''
+  last_name: ''
+---
+<p style="text-align: justify;">Sometimes our code has some characteristics that indicate it might have problems underneath. For example, excessive or unnecessary comments, ultra long method bodies or classes with no functionality (only data). This indications / symptoms are called Code Smells (they stink :)). There are lots of "catalogued" Code Smells around. The term was created by Kent Beck (the TDD guy) in the late 90's and got momentum after the publishing of a Martin Fowler's book called "Refactoring: Improving the Design of Existing Code" [Fowler, 1999].</p>
+<p style="text-align: justify;">Code Smells are not bugs, and don't point to bugs. In general they point <strong>design</strong> issues which lead to hard times on development, maintenance, etc. The advantage of cataloguing and studying Code Smells is that they can help in refactoring processes and in general learning of designing software. According to Martin Fowler, "One of the nice things about smells is that it's easy for inexperienced people to spot them, even if they don't know enough to evaluate if there's a real problem or to correct them" [BlogCodeSmells, Fowler]. This can be an incentive to increase interaction between experienced and beginners on a development team. Also, of course, cataloguing this symptoms creates a language to handle with the process of refactoring easier. A team can have a code revision that specifies explicitly which Code Smells should necessarily be searched in code. Also, tickets opened for the development team can just point the possible design flaw with the name of the Code Smell, without the need to explain what are the characteristics or the possible underlying problems, etc.</p>
+<p style="text-align: justify;">Next we'll see some code smells which I think are common to spot, or were a surprise to me when I first read about them.</p>
+<h2 style="text-align: justify;">Duplicated Code</h2>
+<p style="text-align: justify;">Generally, it's pretty easy to spot duplicated code. And almost always it's not a good design decision. One can avoid code duplication by creating private methods that provide the duplicated functionality, or by using composition of an object that provides this functionality (maybe using the Strategy Pattern), or by using inheritance, etc. There are several ways to avoid duplicated code. And if you don't, expect to have lots of problems once you start changing or expading your software. Even more if you don't use unit tests. Remember the DRY (Don't Repeat Yourself) principle.</p>
+<h2 style="text-align: justify;">Dead Code</h2>
+<p style="text-align: justify;">That's easy. Who never saw commented code in a software source code? Totally useless code, which should not be there. As there is no good reason not to use Version Control tools nowadays, all dead code should be removed from the source code. If it was an old version of something, it belongs to history, and if needed can be obtained through the Version Control tool.</p>
+<h2 style="text-align: justify;">Too Many Parameters</h2>
+<p style="text-align: justify;">In good object oriented design, every method should be small. If a method receives several parameters, in general, it has a big body. Switch cases, lots of if-elses also indicates the same thing. When using OO languagens, you should also prefer inheritance and polimorphism to take place, and create a structure of classes that through virtual methods you execute exactly what you need. This is one of the options (using objects to separate designed functionality per group of parameters). The Parameter Object and Query Object patterns, for example, can be used for that. The other option is to revise the responsibilities of the class and method and refactor them.</p>
+<h2 style="text-align: justify;">Inappropriate Intimacy</h2>
+<p style="text-align: justify;">Classes should depend the minimum from each other (single responsability principle, low coupling principle, etc). When a class depends a lot on the implementation of another, we have a "inappropriate intymacy". The most common case of this is when we see a method which should not be public being used by an object to use some internal object that composes the first. For example:</p>
+<p>[code language="java"]<br />
+public Integer numberOfBooksInInventory(Inventory inventory) {<br />
+     return inventory.getBooks().count();<br />
+}<br />
+[/code]</p>
+<p style="text-align: justify;">In the code above, our class which contains this method is acessing an internal collection of books of the Inventory class, and using the method count() of it. This creates a dependency of Inventory and Book with our class. If the class Inventory changes internally, it will crash our class code. So we're not using encapsulation correctly, and our class has "inappropriate intimacy" with Inventory.</p>
+<p style="text-align: justify;">Consider this worse cenario:</p>
+<p>[code language="java"]<br />
+public Set getBooksWithLowStock(Inventory inventory) {<br />
+    Set booksLowInStock = new HashSet();<br />
+    for (Book book : inventory.getBooks()) {<br />
+        if (book.getInStock() &lt;= LOW_STOCK_LIMIT) {<br />
+            booksLowInStock.add(book);<br />
+        }<br />
+    }<br />
+    return booksLowInStock ;<br />
+}<br />
+[/code]</p>
+<p style="text-align: justify;">In this case, it is yet more clear that our class is "invading" the Inventory class, and the coupling between them is high. To fix these problems (in both examples), the Inventory class must absorb both functionalities (providing number of books in the inventory and the books with low stock), and provide public methods, hiding access to it's internal Book collection from external objects.</p>
+<h2 style="text-align: justify;">Other Code Smells</h2>
+<p style="text-align: justify;">There are several other Code Smells around. A famous book that contains a catalog of them is [Refactoring, 1999], which is the book that made the term become famous. Another book that was recommended to me is "Refactoring to Patterns" [Kerievsky, 2004]. A good online list can be found in [SiteCodeHorror].</p>
+<p style="text-align: justify;">----</p>
+<p style="text-align: justify;">[Fowler, 1999] Fowler, Martin (1999). Refactoring. Improving the Design of Existing Code. Addison-Wesley. ISBN 0-201-48567-2.<br />
+[BlogCodeSmells, Fowler] CodeSmells, http://martinfowler.com/bliki/CodeSmell.html.<br />
+[SiteCodeHorror] Code Smells, http://blog.codinghorror.com/code-smells.</p>

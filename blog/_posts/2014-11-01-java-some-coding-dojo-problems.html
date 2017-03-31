@@ -1,0 +1,76 @@
+---
+layout: post
+title: "[Java] Some Coding Dojo problems"
+date: 2014-11-01 20:00:43.000000000 -02:00
+type: post
+published: true
+status: publish
+categories: []
+tags:
+- Java
+meta:
+  _edit_last: '1'
+author:
+  login: danielcgimenes@gmail.com
+  email: danielcgimenes@gmail.com
+  display_name: danielcgimenes@gmail.com
+  first_name: ''
+  last_name: ''
+---
+<p>I have been solving some exercises commonly done in Coding Dojos to practice some TDD and basic programming logic, and decided to post them on GitHub and here so anyone that is interested can take a look.</p>
+<p>GitHub: <a title="Coding Dojo Problems GitHub" href="https://github.com/danielgimenes/CodingDojo" target="_blank">https://github.com/danielgimenes/CodingDojo</a></p>
+<h2>Harry Potter</h2>
+<p>To try and encourage more sales of the 5 different Harry Potter books they sell, a bookshop has decided to offer discounts of multiple-book purchases.</p>
+<p>One copy of any of the five books costs 8 EUR.</p>
+<p>If, however, you buy two different books, you get a 5% discount on those two books.</p>
+<p>If you buy 3 different books, you get a 10% discount.</p>
+<p>If you buy 4 different books, you get a 20% discount.</p>
+<p>If you go the whole hog, and buy all 5, you get a huge 25% discount.</p>
+<p>Note that if you buy, say, four books, of which 3 are different titles, you get a 10% discount on the 3 that form part of a set, but the fourth book still costs 8 EUR.</p>
+<p>Your mission is to write a piece of code to calculate the price of any conceivable shopping basket (containing only Harry Potter books), giving as big a discount as possible.</p>
+<p>For example, how much does this basket of books cost?</p>
+<p>2 copies of the first book 2 copies of the second book 2 copies of the third book 1 copy of the fourth book 1 copy of the fifth book</p>
+<p>One way of group these 8 books is: 1 group of 5 --&gt; 25% discount (1st,2nd,3rd,4th,5th) +1 group of 3 --&gt; 10% discount (1st,2nd,3rd) This would give a total of 5 books at a 25% discount +3 books at a 10% discount Giving 5 x (8 - 2.00) == 5 x 6.00 == 30.00 +3 x (8 - 0.80) == 3 x 7.20 == 21.60 For a total of 51.60</p>
+<p>However, a different way to group these 8 books is: 1 group of 4 books --&gt; 20% discount (1st,2nd,3rd,4th) +1 group of 4 books --&gt; 20% discount (1st,2nd,3rd,5th) This would give a total of 4 books at a 20% discount +4 books at a 20% discount Giving 4 x (8-1.60) == 4 x 6.40 == 25.60 +4 x (8-1.60) == 4 x 6.40 == 25.60 For a total of 51.20</p>
+<p>And 51.20 is the price with the biggest discount.</p>
+<p>Solution: <a title="HarryPotter Solution at GitHub" href="https://github.com/danielgimenes/CodingDojo/tree/master/HarryPotter" target="_blank">https://github.com/danielgimenes/CodingDojo/tree/master/HarryPotter</a></p>
+<h2><a href="https://github.com/danielgimenes/CodingDojo#tennisscoring" name="user-content-tennisscoring"></a>Tennis Scoring</h2>
+<p>You task is to implement a tennis scoring program. Summary of tennis scoring:</p>
+<ol>
+<li>A game is won by the first player to have won at least four points in total and at least two points more than the opponent.</li>
+<li>The running score of each game is described in a manner peculiar to tennis: scores from zero to three points are described as "love", "fifteen", "thirty", and "forty" respectively.</li>
+<li>If at least three points have been scored by each player, and the scores are equal, the score is "deuce".</li>
+<li>If at least three points have been scored by each side and a player has one more point than his opponent, the score of the game is "advantage" for the player in the lead.</li>
+</ol>
+<p>Solution: <a title="TennisScoring Solution at GitHub" href="https://github.com/danielgimenes/CodingDojo/tree/master/TennisScoring" target="_blank">https://github.com/danielgimenes/CodingDojo/tree/master/TennisScoring</a></p>
+<h2><a href="https://github.com/danielgimenes/CodingDojo#gameoflife" name="user-content-gameoflife"></a>Game Of Life</h2>
+<p>Develop an algorithm that takes "one step" in the game of life. The behaviour examples may simply be the rules of the game:</p>
+<ol>
+<li>Any live cell with fewer than two live neighbours dies, as if caused by underpopulation.</li>
+<li>Any live cell with more than three live neighbours dies, as if by overcrowding.</li>
+<li>Any live cell with two or three live neighbours lives on to the next generation.</li>
+<li>Any dead cell with exactly three live neighbours becomes a live cell.</li>
+</ol>
+<p>You also have to think of things such as how to represent the board in a test-friendly way, and what "value" cells outside the board has. Or maybe the board does not have borders?</p>
+<p>Solution: <a title="GameOfLife Solution at GitHub" href="https://github.com/danielgimenes/CodingDojo/tree/master/GameOfLife" target="_blank">https://github.com/danielgimenes/CodingDojo/tree/master/GameOfLife</a></p>
+<h2><a href="https://github.com/danielgimenes/CodingDojo#fizzbuzz" name="user-content-fizzbuzz"></a>Fizz Buzz</h2>
+<p>For numbers 1 through 100,</p>
+<p>if the number is divisible by 3 print Fizz; if the number is divisible by 5 print Buzz; if the number is divisible by 3 and 5 (15) print FizzBuzz; else, print the number.</p>
+<p>Solution: <a title="FizzBuzz Solution at GitHub" href="https://github.com/danielgimenes/CodingDojo/tree/master/FizzBuzz" target="_blank">https://github.com/danielgimenes/CodingDojo/tree/master/FizzBuzz</a></p>
+<h2>SQL String Generator</h2>
+<p>Given table metadata (name, columns/types, etc.), generate a well-formed SQL string. For example:</p>
+<p>String[] columns = { "a", "b", "c" };<br />
+assertEquals("select a,b,c from x", sql.select(tableName, columns));</p>
+<p>Do this for the usual SQL queries: SELECT, INSERT, UPDATE, DELETE. Remember to only do one thing at a time, and try not to think of the solution "ahead of time". Let the methods and objects just grow by themselves, as you write more and more tests.</p>
+<p>Solution: <a title="SQL String Generator Solution at GitHub" href="https://github.com/danielgimenes/CodingDojo/tree/master/SQLStringGenerator" target="_blank">https://github.com/danielgimenes/CodingDojo/tree/master/SQLStringGenerator</a></p>
+<h2>Postfix Form</h2>
+<p>Given an expression in infix form (operators appear inline in the expression) like:</p>
+<p>3 * (2 + 5)</p>
+<p>Transform it to its postfix equivalent:</p>
+<p>3 2 5 + *</p>
+<p>Examples:</p>
+<p>Infix: 3 * (2 + 5)<br />
+Postfix: 3 2 5 + *</p>
+<p>Infix: ((2 + 3) / 4) + (3 + 1) * 4<br />
+Postfix: 2 3 + 4 / 3 1 + 4 * +</p>
+<p>Solution: <a title="PostFix Solution at GitHub" href="https://github.com/danielgimenes/CodingDojo/tree/master/PostfixForm" target="_blank">https://github.com/danielgimenes/CodingDojo/tree/master/PostfixForm</a></p>

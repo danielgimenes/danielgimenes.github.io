@@ -1,0 +1,48 @@
+---
+layout: post
+title: "#SmashBros Twitter Analytics"
+date: 2014-10-03 07:23:14.000000000 -03:00
+type: post
+published: true
+status: publish
+categories: []
+tags:
+- PetProject
+meta:
+  _edit_last: '1'
+author:
+  login: danielcgimenes@gmail.com
+  email: danielcgimenes@gmail.com
+  display_name: danielcgimenes@gmail.com
+  first_name: ''
+  last_name: ''
+---
+<p>October 3rd was the release date of Super Smash Bros for 3DS - Nintendo’s newest game for its portable video-game console. Knowing this and wanting to practice some programming I decided to create a little pet project. "#SmashBros Twitter Analytics" is composed of two softwares: a service to capture and process Twitter data related to the game, and a website to show some interesting information about the tweets. Both were developed in Java platforms and had their code published on GitHub (<a title="#SmashBros Twitter Analytics CODE" href="https://github.com/danielgimenes/SmashBrosTwitterAnalytics" target="_blank">https://github.com/danielgimenes/SmashBrosTwitterAnalytics</a>).</p>
+<p>The website is (for now) hosted on Amazon Web Services, and can be visited through the link: <a title="#SmashBros Twitter Analytics" href="http://54.69.148.65/SmashBrosTwitterAnalytics/" target="_blank">http://54.69.148.65/SmashBrosTwitterAnalytics/</a></p>
+<h2><a href="http://www.dgimenes.com/blog/wp-content/uploads/2014/10/smashbrostwitteranalytics_v1.png"><img class="aligncenter size-large wp-image-472" alt="smashbrostwitteranalytics_v1" src="{{ site.baseurl }}/assets/smashbrostwitteranalytics_v1-1024x762.png" width="440" height="327" /></a><a href="http://www.dgimenes.com/blog/wp-content/uploads/2014/10/smash2.png"><img class="aligncenter size-large wp-image-474" alt="smash2" src="{{ site.baseurl }}/assets/smash2-1024x595.png" width="440" height="255" /></a></h2>
+<h2>Libraries and Frameworks</h2>
+<p>SmashBrosTwitterStreamProcessor (service):</p>
+<ul>
+<li>Java SE</li>
+<li>Twitter4J</li>
+<li>PostgreSQL JDBC</li>
+</ul>
+<p>SmashBrosTwitterAnalytics (website):</p>
+<ul>
+<li>Java EE 7
+<ul>
+<li>JSF</li>
+<li>JPA</li>
+<li>EJB</li>
+<li>Filters</li>
+</ul>
+</li>
+<li>Glassfish</li>
+<li>PrimeFaces</li>
+<li>PostgreSQL JDBC</li>
+</ul>
+<h2>Rules for Capturing and Processing</h2>
+<p>The tweets captured were only the ones with the hashtag #SmashBros in it. This was configured on the Twitter Streaming query with Twitter4J.</p>
+<h2>Information Generated</h2>
+<p>The service processed every tweet and stored it on the relational database. This processing was designed to produce a rank of characters by references (of them on tweets) and a word count for every word in the tweets, excluding words from a list. That list included common english words (pronouns, etc) and words that wouldn't be interesting to analyse (like "Smash" for obvious reasons). The list can be found on the link: http://goo.gl/Y9fC2c</p>
+<p>Also, the website displays the number of tweets captured since it was published, and the number of tweets grouped by hour and day on the last hours and days.</p>
