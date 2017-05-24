@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "br.com.dgimenes.instantapp",
+    "sha256_cert_fingerprints":
+    ["B7:C2:D0:3E:BB:5C:23:69:1B:7A:5F:00:33:3B:A8:70:5C:18:45:CB:1E:4B:F0:80:92:75:EE:6E:ED:92:3E:16"]
+  }
+}]
